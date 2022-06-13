@@ -1,0 +1,54 @@
+.containerG {
+  background-color: #16a34a;
+  display: block;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+.button {
+  padding: 20px;
+  color: rgb(42, 165, 56);
+  font-weight: bold;
+  background-color: #ffebcd;
+  border-radius: 10px;
+  margin-left: 40vw ;
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+}
+.containerG span {
+  font-weight: bold;
+  margin-top: 5vw;
+
+  
+}
+.containerG h2 {
+  margin-top: 2vw ;
+ 
+  text-align: center;
+  
+}
+
+.containerG h3 {
+  margin-top: 0.6vw ;
+  
+  text-align: center;
+}
+
+.containerG a {
+  font-weight: bold;
+  color: #024119a7;
+  display: flex;
+  justify-content: center;
+}
+.containerG a:hover {
+  color: #024119;
+}
+
+.containerG p {
+  font-weight: bold;
+  color: rgb(165, 65, 65);
+  text-align: center;
+  
+}
+

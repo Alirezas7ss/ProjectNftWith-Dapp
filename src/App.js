@@ -8,12 +8,14 @@ import ReadForm from './component/ReadForm.js'
 import GetBalance from './component/GetBalance.js'
 import WriteForm from './component/WriteForm.js';
 import TxList from './component/TxList.js';
-const address = '0x898B5464A6067913c8aC27E89A838dC6F6E4571C'
+import GetToken from './component/GetToken';
+const address = '0x0bae2E9899Be24F5E1Fb827CDf2Aa938CE09b71E'
 
 function App() {
   const [txs, setTxs] = useState([]);
   const [contractListened, setContractListened] = useState();
   const [Address, setAddress] = useState(null)
+  const [Error, setError ] = useState(false)
   const [contractInfo, setContractInfo] = useState({
 
     address : '-',
@@ -34,7 +36,20 @@ function App() {
     const signer = await provider.getSigner();
     const erc20 = new ethers.Contract(address, ERC20ABI, signer);
     await erc20.transfer(data.get('recipient'), data.get('amount'));
-  } 
+
+    
+    
+  }
+  const handleGetToken = async() => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send('eth_requestAccounts',[]);
+    const signer = await provider.getSigner();
+    const erc20 = new ethers.Contract(address, ERC20ABI, signer);
+    try {await erc20.getToken(); 
+    } catch(error) {
+      setError(true)
+    }
+  }
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData(e.target);
@@ -43,7 +58,7 @@ function App() {
     
     const tokenName = await erc20.name();
     const tokenSymbol = await erc20.symbol();
-    const totalSupply = await erc20.totalSupply();
+    const totalSupply = await erc20.totalSupply()/10**18;
 
     setContractInfo({
       address : data.get('addr'),
@@ -59,7 +74,7 @@ function App() {
     const erc20 = new ethers.Contract(address,ERC20ABI,provider);
     const signer = provider.getSigner();
     const signerAddress = await signer.getAddress();
-    const balance = await erc20.balanceOf(signerAddress);
+    const balance = await erc20.balanceOf(signerAddress)/10**18;
     
     setBalanceInfo({
       address : signerAddress,
@@ -111,6 +126,7 @@ function App() {
   return (
     <>
       <Navbar connectWallet={connectWallet} disconnectWallet={disconnectWallet} Address ={Address} setAddress ={setAddress} />
+      <GetToken handleGetToken={handleGetToken} Error={Error} />
       <div className="grid grid-cols-1 gap-2 md:grid-cols-2 bg-green-500 pt-4 pb-6">
   
           <div className = "p-6">
