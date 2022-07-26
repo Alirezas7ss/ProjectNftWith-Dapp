@@ -16,6 +16,7 @@ function App() {
   const [contractListened, setContractListened] = useState();
   const [Address, setAddress] = useState(null)
   const [Error, setError ] = useState(false)
+  const [network, setNetwork] = useState(null)
   const [contractInfo, setContractInfo] = useState({
 
     address : '-',
@@ -86,12 +87,61 @@ function App() {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     await provider.send('eth_requestAccounts',[]);
     const signer = provider.getSigner();
+    const network = await (await provider.getNetwork()).chainId
+    setNetwork(network)
+    console.log(network)
     signer.getAddress().then((result)=>{setAddress(result)});
     
   }
   const disconnectWallet = () =>{
     setAddress(null);
+    setNetwork(null);
   }
+  
+  const switchNetwork = async () => {
+    
+  
+      // check if the chain to connect to is installed
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: "0x4" }], // chainId must be in hexadecimal numbers
+      });
+      window.location.reload();
+
+  }
+   // Check if MetaMask is installed
+ // MetaMask injects the global API into window.ethereum
+//  if (window.ethereum) {
+//   try {
+//     // check if the chain to connect to is installed
+//     await window.ethereum.request({
+//       method: 'wallet_switchEthereumChain',
+//       params: [{ chainId: '0x61' }], // chainId must be in hexadecimal numbers
+//     });
+//   } catch (error) {
+//     // This error code indicates that the chain has not been added to MetaMask
+//     // if it is not, then install it into the user MetaMask
+//     if (error.code === 4902) {
+//       try {
+//         await window.ethereum.request({
+//           method: 'wallet_addEthereumChain',
+//           params: [
+//             {
+//               chainId: '0x61',
+//               rpcUrl: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
+//             },
+//           ],
+//         });
+//       } catch (addError) {
+//         console.error(addError);
+//       }
+//     }
+//     console.error(error);
+//   }
+// } else {
+//   // if no window.ethereum then MetaMask is not installed
+//   alert('MetaMask is not installed. Please consider installing it: https://metamask.io/download.html');
+// } 
   //useEffect for listening to events in smart contract and return them in TxList component :0
   useEffect(() => {
     if (contractInfo.address !== "-") {
@@ -123,14 +173,18 @@ function App() {
     }
   }, [contractInfo.address]);
 
+  useEffect(() => {
+    connectWallet();
+  }, []);
+
   return (
     <>
-      <Navbar connectWallet={connectWallet} disconnectWallet={disconnectWallet} Address ={Address} setAddress ={setAddress} />
+      <Navbar connectWallet={connectWallet} switchNetwork={switchNetwork}  disconnectWallet={disconnectWallet} network={network} setNetwork={setNetwork}  Address ={Address} setAddress ={setAddress} />
       <GetToken handleGetToken={handleGetToken} Error={Error} />
       <div className="grid grid-cols-1 gap-2 md:grid-cols-2 bg-green-500 pt-4 pb-6">
   
           <div className = "p-6">
-            <ReadForm handleSubmit={handleSubmit} contractInfo={contractInfo} setContractInfo={setContractInfo}/>
+            <ReadForm handleSubmit={handleSubmit} contractInfo={contractInfo}  setContractInfo={setContractInfo}/>
             <WriteForm handleTransfer={handleTransfer} />
           </div>
           <div>

@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function Navbar({connectWallet, disconnectWallet, Address, setAddress}) {
+export default function Navbar({connectWallet, disconnectWallet, Address, setAddress , network , switchNetwork}) {
   return (
     <div>
         <div>
@@ -15,7 +15,7 @@ export default function Navbar({connectWallet, disconnectWallet, Address, setAdd
                     {Address !== null &&
                         <button type="submit" onClick={disconnectWallet} class="text-white text-lg bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:ring-pink-200 dark:focus:ring-pink-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"> Disconnect </button>
                     }
-
+                    {Address !== null && <div>{network === 4 ? <div></div> : <button className='bg-red-200 text-red-400 p-2 rounded-lg' onClick={switchNetwork}  >switchedNetwork to rinkeby</button> }</div> }
                     <div class="p-6 rounded-lg border shadow-md bg-green-700 border-green-600">
                         <div class="hidden w-full md:block md:w-auto" id="mobile-menu">
                         <h2 className="text-white text-lg"> Your Address: 
